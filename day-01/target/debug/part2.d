@@ -1,1 +1,0 @@
-/home/explosiveend/projects/advent-of-code/2023/day-01/target/debug/part2: /home/explosiveend/projects/advent-of-code/2023/day-01/src/bin/input.txt /home/explosiveend/projects/advent-of-code/2023/day-01/src/bin/part2.rs
