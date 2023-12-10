@@ -37,7 +37,7 @@ fn part1(input: &str) -> usize {
 
     let mut result: Vec<usize> = Vec::with_capacity(seeds.len());
     
-    // Chain of conversions
+    // Chain of map creations
     let to_soil = a_to_b(&mut lines, "soil-to-fertilizer map:");
     let to_fert = a_to_b(&mut lines, "fertilizer-to-water map:");
     let to_water = a_to_b(&mut lines, "water-to-light map:");
@@ -48,6 +48,7 @@ fn part1(input: &str) -> usize {
     
 
     for seed in &seeds {
+        // Chain of conversions
         let soil = conversion(*seed, &to_soil);
         let fert = conversion(soil, &to_fert);
         let water = conversion(fert, &to_water);
