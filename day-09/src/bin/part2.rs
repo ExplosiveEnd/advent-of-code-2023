@@ -16,7 +16,7 @@ fn solution(input: &str) -> i32 {
 
         // Array_windows are NIGHTLY and default to size 2
         while !histories.last().unwrap().iter().all(|&x| x == 0) {
-            histories.push(histories[histories.len()-1].array_windows().map(|[x, y]| y - x).collect::<Vec<_>>());
+            histories.push(histories.last().unwrap().array_windows().map(|[x, y]| y - x).collect::<Vec<_>>());
         }
 
         // Inserts values into beginning of each subvector
