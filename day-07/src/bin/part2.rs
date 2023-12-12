@@ -71,7 +71,7 @@ impl Type {
         let mut occurences: Vec<usize> = Vec::with_capacity(5);
         let mut hash: HashMap<char, u32> = HashMap::new();
         let mut values: Vec<u32> = Vec::with_capacity(5);
-        
+
         hash.insert('A', 14);
         hash.insert('K', 13);
         hash.insert('Q', 12);
@@ -88,35 +88,40 @@ impl Type {
 
         let mut count: HashMap<char, u32> = HashMap::new();
 
-        //println!("Hand: {hand} with bid: {bid}");
-
         for card in hand.chars() {
             values.push(*hash.get(&card).unwrap());
             count.insert(card, hand.matches(card).count().try_into().unwrap());
         }
 
-        println!("Count: {count:?}");
         let max = count.iter().max_by_key(|&(_, v)| v).unwrap();
-        println!("Max value: {max:?}");
 
         if count.contains_key(&'J') && count.keys().len() != 1 && *max.0 != 'J'{
             count.insert(*max.0, max.1 + count.get(&'J').unwrap()); 
             count.remove(&'J');
         }
         else if *max.0 == 'J' {
-            let inner_max = count.iter().max_by_key(|&(k, _)| hash.get(k).unwrap()).unwrap();
-            println!("Inner max: {inner_max:?}");
-            if inner_max.0 != &'J' {
-                count.insert(*inner_max.0, inner_max.1 + count.get(&'J').unwrap());
+            let temp: Vec<(char, u32)> = count.clone()
+                .into_iter()
+                .filter(|&(k, v)| v == 2 && k != 'J')
+                .collect();
+            // Checks if J == 2 and X == 2, ensuring a Type::FOUR is made
+            if *max.1 == 2 && temp.len() == 1 {
+                count.insert(temp[0].0, temp[0].1 + count.get(&'J').unwrap());
                 count.remove(&'J');
+            }
+            // Sets all the J's to the maximum other value in the hand
+            else {
+                let inner_max = count.iter().max_by_key(|&(k, _)| hash.get(k).unwrap()).unwrap();
+                if inner_max.0 != &'J' {
+                    count.insert(*inner_max.0, inner_max.1 + count.get(&'J').unwrap());
+                    count.remove(&'J');
+                }
             }
        }
 
         for (_, freq) in count {
             occurences.push(freq.try_into().unwrap());
         }
-
-        println!("Occurences: {occurences:?}");
 
         // All the same
         if occurences.contains(&5) {
@@ -145,7 +150,6 @@ impl Type {
                 return Self::TWO(hand, bid, values);
             }
         } 
-        //println!("Occurences: {occurences:?}");
 
         Self::HIGH(hand, bid, values)
 
@@ -196,54 +200,45 @@ impl Game {
 
         for item in &self.highs {
             if let Type::HIGH(_, val, _) = item {
-                //println!("Value: {val}");
                 values.push(*val);
             }
         }
 
         for item in &self.ones {
             if let Type::ONE(_, val, _) = item {
-                //println!("Value: {val}");
                 values.push(*val);
             }
         }
 
         for item in &self.twos {
             if let Type::TWO(_, val, _) = item {
-                //println!("Value: {val}");
                 values.push(*val);
             }
         }
 
         for item in &self.threes {
             if let Type::THREE(_, val, _) = item {
-                //println!("Value: {val}");
                 values.push(*val);
             }
         }
 
         for item in &self.houses {
             if let Type::HOUSE(_, val, _) = item {
-                //println!("Value: {val}");
                 values.push(*val);
             }
         }
 
         for item in &self.fours {
             if let Type::FOUR(_, val, _) = item {
-                //println!("Value: {val}");
                 values.push(*val);
             }
         }
 
         for item in &self.fives {
             if let Type::FIVE(_, val, _) = item {
-                //println!("Value: {val}");
                 values.push(*val);
             }
         }
-
-        println!("Get_values: {values:?}");
 
         values.iter().enumerate().map(|(i, v)| (v*(i as u32 +1)) as u32).sum()
     }
@@ -252,24 +247,19 @@ impl Game {
 fn part2(input: &str) -> u32 {
 
     let types: Vec<Type> = input.lines().map(Type::new).collect();
-    //println!("Types: {types:?}");
 
     let mut game = Game::new();
     for val in types {
         game.add(val);
     }
-    //println!("Game: {game:?}");
 
     game.sort();
-
-    println!("Game post-sort: {:?}", game);
 
     game.get_rank()
 }
 
 fn main() {
     let input = include_str!("input.txt");
-    //println!("{input}");
 
     let output = part2(input);
     println!("Output: {output}");

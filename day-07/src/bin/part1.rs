@@ -86,14 +86,10 @@ impl Type {
         hash.insert('3', 3);
         hash.insert('2', 2);
 
-        //println!("Hand: {hand} with bid: {bid}");
-
         for card in hand.chars() {
             values.push(*hash.get(&card).unwrap());
             occurences.push(hand.matches(card).count());
         }
-
-        //println!("Values: {values:?}");
 
         // All the same
         if occurences.contains(&5) {
@@ -122,7 +118,6 @@ impl Type {
                 return Self::TWO(hand, bid, values);
             }
         } 
-        //println!("Occurences: {occurences:?}");
 
         Self::HIGH(hand, bid, values)
     }
@@ -172,54 +167,45 @@ impl Game {
 
         for item in &self.highs {
             if let Type::HIGH(_, val, _) = item {
-                //println!("Value: {val}");
                 values.push(*val);
             }
         }
 
         for item in &self.ones {
             if let Type::ONE(_, val, _) = item {
-                //println!("Value: {val}");
                 values.push(*val);
             }
         }
 
         for item in &self.twos {
             if let Type::TWO(_, val, _) = item {
-                //println!("Value: {val}");
                 values.push(*val);
             }
         }
 
         for item in &self.threes {
             if let Type::THREE(_, val, _) = item {
-                //println!("Value: {val}");
                 values.push(*val);
             }
         }
 
         for item in &self.houses {
             if let Type::HOUSE(_, val, _) = item {
-                //println!("Value: {val}");
                 values.push(*val);
             }
         }
 
         for item in &self.fours {
             if let Type::FOUR(_, val, _) = item {
-                //println!("Value: {val}");
                 values.push(*val);
             }
         }
 
         for item in &self.fives {
             if let Type::FIVE(_, val, _) = item {
-                //println!("Value: {val}");
                 values.push(*val);
             }
         }
-
-        println!("Get_values: {values:?}");
 
         values.iter().enumerate().map(|(i, v)| (v*(i as u32 +1)) as u32).sum()
     }
@@ -228,24 +214,19 @@ impl Game {
 fn part1(input: &str) -> u32 {
 
     let types: Vec<Type> = input.lines().map(Type::new).collect();
-    //println!("Types: {types:?}");
 
     let mut game = Game::new();
     for val in types {
         game.add(val);
     }
-    //println!("Game: {game:?}");
 
     game.sort();
-
-    println!("Game post-sort: {:?}", game);
 
     game.get_rank()
 }
 
 fn main() {
     let input = include_str!("input.txt");
-    //println!("{input}");
 
     let output = part1(input);
     println!("Output: {output}");
