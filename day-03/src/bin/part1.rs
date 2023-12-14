@@ -123,19 +123,13 @@ fn parse_nums(input: &String) -> Vec<(usize, String)> {
     hold
 }
 
-fn part2(input: &Vec<String>) -> u32 {
-    0
-}
 
 fn part1(input: &Vec<String>) -> u32 {
     let mut wrappers: Vec<Wrapper> = Vec::new();
-    //let lines: Vec<String> = input.lines().map(|x| x.to_string()).collect();
 
     for (index, line) in input.iter().enumerate() {
         let mut prev_specials: Vec<usize> = vec![];
         let mut next_specials: Vec<usize> = vec![];
-
-        //let line = p_line;
 
         if index != 0 {
             // Prev_specials
